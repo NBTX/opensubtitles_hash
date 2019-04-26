@@ -1,0 +1,7 @@
+name: opensubtitles_hash
+description: Simple Dart hashing library for OpenSubtitles.
+version: 1.0.0
+author: NBTX
+
+dependencies:
+  test: ^1.6.2
