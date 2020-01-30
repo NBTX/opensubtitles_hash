@@ -4,7 +4,7 @@ version: 1.0.0
 author: NBTX <nbtx1@protonmail.com>
 homepage: https://github.com/NBTX/opensubtitles_hash
 environment:
-  sdk: ">=2.0.0-dev.61.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   test: ^1.6.2
