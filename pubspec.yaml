@@ -1,5 +1,5 @@
 name: opensubtitles_hash
-description: Simple Dart hashing library for OpenSubtitles.
+description: "Dart 2 hashing library for OpenSubtitles. This is used to calculate OpenSubtitles' hash for video files in order to search for subtitles for that file in OpenSubtitles' database."
 version: 1.0.0
 author: NBTX <nbtx1@protonmail.com>
 homepage: https://github.com/NBTX/opensubtitles_hash
