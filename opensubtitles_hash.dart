@@ -47,35 +47,26 @@ import 'dart:io';
 /// )
 ///
 class OpenSubtitlesHasher {
-
   // 64 * 1024
-  static const HASH_CHUNK_SIZE = 65536;
+  static const kHashChunkSize = 65536;
 
-  static Future<String> computeURLHash(String url, {
-    Map<String, dynamic> headers,
-    bool followRedirects = false
-  }) async {
-
-    HttpClient client = new HttpClient();
+  static Future<String> computeURLHash(String url, {Map<String, dynamic>? headers, bool followRedirects = false}) async {
+    HttpClient client = HttpClient();
     HttpClientResponse response;
-    response = await client.getUrl(Uri.parse(url))
-      .then((HttpClientRequest request){
-        // Add headers if they have been provided...
-        if(headers != null){
-          headers.forEach((String name, dynamic value){
-            request.headers.add(name, value.toString());
-          });
-        }
+    response = await client.getUrl(Uri.parse(url)).then((HttpClientRequest request) {
+      // Add headers if they have been provided...
+      if (headers != null) {
+        headers.forEach((String name, dynamic value) {
+          request.headers.add(name, value.toString());
+        });
+      }
 
-        request.followRedirects = followRedirects;
-        return request.close();
-      });
+      request.followRedirects = followRedirects;
+      return request.close();
+    });
 
     List<List<int>> responseData = await response.toList();
-    return await computeHash(
-      responseData.expand((i) => i).toList()
-    );
-
+    return await computeHash(responseData.expand((i) => i).toList());
   }
 
   static Future<String> computeFileHash(File file) async {
@@ -88,12 +79,12 @@ class OpenSubtitlesHasher {
   /// This is used by [computeURLHash] and [computeFileHash].
   ///
   static Future<String> computeHash(List<int> subtitleFile) async {
-    List<int> data = new List.filled(8, 0, growable: true);
+    List<int> data = List.filled(8, 0, growable: true);
 
     /// Perform a shift on the first 8 entries
     /// in [data] relative to the size of the file.
     int temp = subtitleFile.length;
-    for(var i = 0; i < 8; i++){
+    for (var i = 0; i < 8; i++) {
       data[i] = temp & 255;
       temp = temp >> 8;
     }
@@ -101,15 +92,15 @@ class OpenSubtitlesHasher {
     /// Read bytes from 0 to [HASH_CHUNK_SIZE]
     /// and add the value to the corresponding
     /// position in [data].
-    for(var i = 0; i < HASH_CHUNK_SIZE; i++){
+    for (var i = 0; i < kHashChunkSize; i++) {
       data[(i + 8) % 8] += subtitleFile[i];
     }
 
     /// Read the last [HASH_CHUNK_SIZE] bytes
     /// and add the value to the corresponding
     /// position in [data].
-    int startReference = subtitleFile.length - HASH_CHUNK_SIZE;
-    for(var i = startReference; i < subtitleFile.length; i++){
+    int startReference = subtitleFile.length - kHashChunkSize;
+    for (var i = startReference; i < subtitleFile.length; i++) {
       int fileOffset = i - startReference;
       data[(fileOffset + 8) % 8] += subtitleFile[i];
     }
@@ -118,10 +109,7 @@ class OpenSubtitlesHasher {
   }
 
   static _binl2hex(a) {
-    var b = 255,
-        c = 7,
-        d = '0123456789abcdef',
-        e = '';
+    var b = 255, c = 7, d = '0123456789abcdef', e = '';
 
     a[1] += a[0] >> 8;
     a[0] = a[0] & b;
@@ -139,9 +127,8 @@ class OpenSubtitlesHasher {
     a[6] = a[6] & b;
     a[7] = a[7] & b;
     for (c; c > -1; c--) {
-        e += d[(a[c] >> 4 & 15)] + d[(a[c] & 15)];
+      e += d[(a[c] >> 4 & 15)] + d[(a[c] & 15)];
     }
     return e;
   }
-
 }
